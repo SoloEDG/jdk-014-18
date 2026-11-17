@@ -35,6 +35,8 @@ async function readImage(file: File): Promise<ComicPage> {
         dialogue: "在这一页，留下属于你的故事。",
         speaker: "旁白",
         sound: "wind",
+        transition: "fade",
+        action: null,
         duration: 5,
       },
     ],

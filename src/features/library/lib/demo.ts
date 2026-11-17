@@ -42,19 +42,43 @@ export function demoDocument(): ComicDocument {
         width: 900,
         height: 1200,
         image: artwork(c + p),
-        panels: text.map((dialogue, i) => ({
-          id: `panel-${c}-${p}-${i}`,
-          dialogue,
-          speaker: i % 2 ? "陈屿" : "旁白",
-          sound: i === 2 ? "pulse" : "rain",
-          duration: 4 + i,
-          rect: [
-            { x: 12, y: 12, width: 876, height: 532 },
-            { x: 12, y: 558, width: 430, height: 390 },
-            { x: 456, y: 558, width: 432, height: 390 },
-            { x: 12, y: 962, width: 876, height: 226 },
-          ][i]!,
-        })),
+        panels: text.map((dialogue, i) => {
+          const sound =
+            c === 2
+              ? "wind"
+              : c === 1
+                ? i >= 3
+                  ? "wind"
+                  : "pulse"
+                : i === 3
+                  ? "pulse"
+                  : "rain";
+          return {
+            id: `panel-${c}-${p}-${i}`,
+            dialogue,
+            speaker: i % 2 ? "陈屿" : "旁白",
+            sound,
+            // Chapter one ends in a hard cut into static; chapter two lets
+            // the static dissolve into the coast. Everything else keeps the
+            // same bed flowing across panels.
+            transition: c === 1 && i === 3 ? "cut" : "continue",
+            action:
+              i === 1
+                ? "steps"
+                : i === 2 && p % 2 === 0
+                  ? "door"
+                  : i === 3 && c === 1
+                    ? "thunder"
+                    : null,
+            duration: 4 + i,
+            rect: [
+              { x: 12, y: 12, width: 876, height: 532 },
+              { x: 12, y: 558, width: 430, height: 390 },
+              { x: 456, y: 558, width: 432, height: 390 },
+              { x: 12, y: 962, width: 876, height: 226 },
+            ][i]!,
+          };
+        }),
       })),
     })),
   };

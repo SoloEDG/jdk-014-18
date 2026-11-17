@@ -33,7 +33,18 @@ export function useWorkspace() {
     }
     if (e.key === "Escape") reader.setMode("page");
   }
-  onMounted(() => window.addEventListener("keydown", keydown));
-  onBeforeUnmount(() => window.removeEventListener("keydown", keydown));
+  function wake() {
+    if (document.visibilityState === "visible") audio.resume();
+  }
+  onMounted(() => {
+    window.addEventListener("keydown", keydown);
+    document.addEventListener("visibilitychange", wake);
+    window.addEventListener("focus", wake);
+  });
+  onBeforeUnmount(() => {
+    window.removeEventListener("keydown", keydown);
+    document.removeEventListener("visibilitychange", wake);
+    window.removeEventListener("focus", wake);
+  });
   return { doc, reader, progress, library, chapters, audio };
 }

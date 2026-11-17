@@ -1,17 +1,37 @@
 import type { Panel } from "../../../shared/document";
-export function cueFor(panel: Panel | undefined) {
+import {
+  ACTION_LABELS,
+  SOUND_LABELS,
+  SOUND_SHORT,
+  panelAction,
+  panelTransition,
+  transitionLabel,
+} from "../../../shared/sound";
+import type { SceneAudio } from "./engine";
+
+/** What the current shot asks the engine to do. */
+export function sceneFor(panel: Panel | undefined): SceneAudio {
   return {
-    title:
-      panel?.sound === "rain"
-        ? "雨夜 · 城市白噪音"
-        : panel?.sound === "pulse"
-          ? "电波 · 低频脉冲"
-          : "远处 · 海岸风声",
-    kind: panel?.sound ?? "rain",
-    speaker: panel?.speaker ?? "旁白",
-    text: panel?.dialogue ?? "请选择一个分镜",
+    sound: panel?.sound ?? "rain",
+    transition: panelTransition(panel),
+    action: panelAction(panel),
   };
 }
-export function volumeLabel(value: number) {
-  return `${Math.round(Math.max(0, Math.min(1, value)) * 100)}%`;
+
+export function cueFor(panel: Panel | undefined) {
+  const sound = panel?.sound ?? "rain",
+    transition = panelTransition(panel),
+    action = panelAction(panel);
+  return {
+    title: SOUND_LABELS[sound],
+    short: SOUND_SHORT[sound],
+    kind: sound,
+    transition,
+    transitionLabel: transitionLabel(transition),
+    action,
+    actionLabel: action ? ACTION_LABELS[action] : "",
+    speaker: panel?.speaker ?? "旁白",
+    text: panel?.dialogue ?? "请选择一个分镜",
+    hasDialogue: Boolean(panel?.dialogue?.trim()),
+  };
 }

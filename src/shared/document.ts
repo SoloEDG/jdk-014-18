@@ -4,12 +4,22 @@ export interface Rect {
   width: number;
   height: number;
 }
+/** The identity of a looping soundscape. Panels sharing a soundscape share one bed. */
+export type Soundscape = "rain" | "pulse" | "wind";
+/** How entering a panel treats the soundscape that is already running. */
+export type PanelTransition = "continue" | "fade" | "cut";
+/** Short, non-looping sounds owned by a single panel visit. */
+export type ActionCue = "steps" | "door" | "chime" | "thunder" | "splash";
 export interface Panel {
   id: string;
   rect: Rect;
   dialogue: string;
   speaker: string;
-  sound: "rain" | "pulse" | "wind";
+  sound: Soundscape;
+  /** Defaults to "continue" for documents saved before this field existed. */
+  transition?: PanelTransition;
+  /** Defaults to no action cue. */
+  action?: ActionCue | null;
   duration: number;
 }
 export interface ComicPage {
